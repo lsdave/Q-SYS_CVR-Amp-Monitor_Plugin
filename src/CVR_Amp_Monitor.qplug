@@ -16,8 +16,6 @@
   No discovery: enter the amp's IP address and press Connect.
   Nothing is ever written to the amp other than queries and ACKs.
 
-  v1.1.2: GR meters are empty until the limiter actually reduces gain (Standard
-  meter, 0..24 dB, grows up from the bottom).
   v1.1.1: rebranded to Atem Audio (plugin Id unchanged, existing designs keep working).
   v1.1.0: meters are now drawn by a separate render timer with attack/release
   ballistics, so they glide between heartbeat samples instead of stepping.
@@ -26,8 +24,8 @@
 
 PluginInfo = {
   Name = "Atem Audio~CVR Amp Monitor",
-  Version = "1.1.2",
-  BuildVersion = "1.1.2.1",
+  Version = "1.1.1",
+  BuildVersion = "1.1.1.1",
   Id = "6b0e2c1a-4f7d-4c39-9a8e-2d5f1b7c3e90",
   Author = "Atem Audio",
   Description = "Input/output metering, limiter gain reduction and channel status for CVR DSP amplifiers (fw 1.1.8/1.1.9) over UDP."
@@ -108,7 +106,7 @@ function GetControls(props)
 
   -- Outputs
   add({ Name = "OutLevel", ControlType = "Indicator", IndicatorType = "Meter", Count = NCH, Min = -60, Max = 3, UserPin = true, PinStyle = "Output" })
-  add({ Name = "GainReduction", ControlType = "Indicator", IndicatorType = "Meter", Count = NCH, Min = 0, Max = 24, UserPin = true, PinStyle = "Output" })
+  add({ Name = "GainReduction", ControlType = "Indicator", IndicatorType = "Meter", Count = NCH, Min = -24, Max = 0, UserPin = true, PinStyle = "Output" })
   for _, n in ipairs({ "OutLevelText", "GRText", "OutVolts", "OutAmps", "OutOhms", "OutTemp", "ChState" }) do
     add({ Name = n, ControlType = "Indicator", IndicatorType = "Text", Count = NCH, UserPin = true, PinStyle = "Output" })
   end
@@ -143,8 +141,8 @@ function GetControlLayout(props)
   local function led(name, pretty, color, x, y)
     layout[name] = { PrettyName = pretty, Style = "Led", Color = color, UnlinkOffColor = true, OffColor = { 45, 45, 45 }, Position = { x, y }, Size = { 16, 16 }, Margin = 2 }
   end
-  local function meter(name, pretty, style, x, y, w, h, color)
-    layout[name] = { PrettyName = pretty, Style = "Meter", MeterStyle = style, Color = color, ShowTextbox = false, Position = { x, y }, Size = { w, h } }
+  local function meter(name, pretty, style, x, y, w, h)
+    layout[name] = { PrettyName = pretty, Style = "Meter", MeterStyle = style, ShowTextbox = false, Position = { x, y }, Size = { w, h } }
   end
 
   if page == "Amp" then
@@ -188,7 +186,7 @@ function GetControlLayout(props)
       local ch = OUT_LETTERS[i]
       label("Out " .. ch, cx, 386, CW - 5, 16, "Center", 11, WHITE)
       meter("OutLevel " .. i, "Output " .. ch .. "~Level", "Level", cx + 16, 404, 30, 130)
-      meter("GainReduction " .. i, "Output " .. ch .. "~Gain Reduction", "Standard", cx + 54, 404, 30, 130, ORANGE)
+      meter("GainReduction " .. i, "Output " .. ch .. "~Gain Reduction", "Reduction", cx + 54, 404, 30, 130)
       label("Lvl", cx + 16, 536, 30, 12, "Center", 9)
       label("GR", cx + 54, 536, 30, 12, "Center", 9)
       text("OutLevelText " .. i, "Output " .. ch .. "~Level Text", cx + 5, 550, CW - 15, 16)
@@ -392,12 +390,11 @@ if Controls then
   for _, n in ipairs(FLAG_LEDS) do hold[n] = {}; active[n] = {} end
 
   ---------------------------------------------------------------- meter ballistics
-  -- invert = true would make "more negative" the attack direction (unused now
-  -- that GR is shown as a positive 0..24 dB value)
+  -- invert = true means "more negative is the attack direction" (GR meter)
   local METERS = {
     InLevel       = { floor = -60, invert = false },
     OutLevel      = { floor = -60, invert = false },
-    GainReduction = { floor = 0,   invert = false },
+    GainReduction = { floor = 0,   invert = true  },
   }
   local mTarget, mShown = {}, {}
   for n, s in pairs(METERS) do
@@ -536,7 +533,7 @@ if Controls then
       Controls.OutTemp[i].String = fmt(t.temps[i], "%.1f")
 
       local gr = t.gr[i] and math.abs(t.gr[i]) or nil
-      setMeter("GainReduction", i, (gr and gr > 0) and math.min(24, gr) or 0)
+      setMeter("GainReduction", i, (gr and gr > 0) and -math.min(24, gr) or 0)
       Controls.GRText[i].String = gr and string.format("GR %.1f dB", gr) or "GR —"
 
       local st = t.outStates[i]
