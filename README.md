@@ -105,4 +105,4 @@ CVR and CVR Pro Audio are trademarks of their respective owners. This project is
 
 ---
 
-Atem Audio · Winnipeg, Manitoba
+Atem Audio 
