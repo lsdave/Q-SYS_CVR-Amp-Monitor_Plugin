@@ -16,7 +16,7 @@
   No discovery: enter the amp's IP address and press Connect.
   Nothing is ever written to the amp other than queries and ACKs.
 
-  v1.1.2: GR meters are empty until the limiter actually reduces gain (Standard
+  v1.1.2 (UNTESTED BETA): GR meters are empty until the limiter actually reduces gain (Standard
   meter, 0..24 dB, grows up from the bottom).
   v1.1.1: rebranded to Atem Audio (plugin Id unchanged, existing designs keep working).
   v1.1.0: meters are now drawn by a separate render timer with attack/release
@@ -54,7 +54,7 @@ function GetColor(props)
 end
 
 function GetPrettyName(props)
-  return "CVR Amp Monitor " .. PluginInfo.Version
+  return "CVR Amp Monitor " .. PluginInfo.Version .. " (untested)"
 end
 
 local PageNames = { "Amp", "Diagnostics" }
@@ -207,7 +207,7 @@ function GetControlLayout(props)
         text(r[1] .. " " .. i, "Output " .. ch .. "~" .. r[1], cx + 21, y, CW - 31, 16)
       end
     end
-    label("Atem Audio · CVR Amp Monitor v" .. PluginInfo.Version, 10, 744, W, 14, "Center", 9)
+    label("Atem Audio · CVR Amp Monitor v" .. PluginInfo.Version .. " · UNTESTED BETA", 10, 744, W, 14, "Center", 9)
 
   elseif page == "Diagnostics" then
     box("Diagnostics", 10, 5, 440, 374)

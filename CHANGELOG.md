@@ -1,6 +1,8 @@
 # Changelog
 
-## 1.1.2 — 2026-10-30
+## 1.1.2 — 2026-10-30 (untested beta)
+> Not yet tested on hardware. Use 1.1.1 from `main` for live systems.
+
 - Gain reduction meters now stay empty until the limiter is actually reducing gain (no red cap at 0 dB). They use a solid orange bar that rises from the bottom.
 - **Pin change:** the `GainReduction` control now runs 0 … 24 (positive dB of reduction) instead of −24 … 0. Update any logic wired to it.
 
