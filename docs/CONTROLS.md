@@ -32,7 +32,7 @@ All controls marked *pin* can be exposed as control pins on the plugin block. Ar
 | Control | Type | Range | Description |
 |---|---|---|---|
 | OutLevel | Meter | −60 … +3 dB | Output voltage in dB relative to rated Vrms. 0 dB = full rated output. |
-| GainReduction | Meter | −24 … 0 dB | Limiter gain reduction. |
+| GainReduction | Meter | 0 … 24 dB | Limiter gain reduction, positive dB. Empty at 0, so it only lights when the limiter is working. |
 | OutLevelText | Text | | Output level as text, or `no model` if no rating is known. |
 | GRText | Text | | Gain reduction as text. |
 | OutVolts | Text | | Output voltage, V. |
