@@ -4,6 +4,8 @@
 
 A Q-SYS plugin for live, read-only monitoring of CVR Pro Audio DSP amplifiers over the network. It shows input and output meters, limiter gain reduction, per-channel state, temperatures, voltage, current and load impedance, all inside a Q-SYS design, without opening the vendor's amp controller software.
 
+<p align="center"><img src="docs/images/amp-page.jpg" alt="CVR Amp Monitor Amp page monitoring a DSP-3004" width="400"></p>
+
 The plugin only listens. It sends status queries and the acknowledgements the amp's protocol requires, and never writes settings to the amp.
 
 ## Features
